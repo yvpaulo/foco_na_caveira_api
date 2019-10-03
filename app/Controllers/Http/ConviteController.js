@@ -52,6 +52,10 @@ class ConviteController {
       user_id: auth.user.id,
       turma_id: request.turma.id
     }))
+      //é bom verificar aqui se o usuario já convidou este email para esta turma e só gravar no banco o que for inédito
+      //lembrando que aqui posso receber mais de um convite por vez, então teria que
+      //procurar cada informação e verificar
+    //const conviteExist = await Convite.where()...
 
     await Convite.createMany(data)
   }

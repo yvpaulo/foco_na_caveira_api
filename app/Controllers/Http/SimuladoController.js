@@ -18,6 +18,11 @@ class SimuladoController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    //estou usando dessa forma porque criei um midleware de turma e
+    //no com a informação da turma verifico quais simulados ela tem
+    const simulados = request.turma.simulados().fetch()
+
+    return simulados
   }
 
   /**
@@ -30,6 +35,7 @@ class SimuladoController {
    * @param {View} ctx.view
    */
   async create ({ request, response, view }) {
+
   }
 
   /**
@@ -41,6 +47,16 @@ class SimuladoController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    const data = request.only(['titulo', 'gabarito', 'pdf'])
+
+    try {
+      const simulado = request.turma.simulados().create(data)
+
+    return simulado
+    } catch (error) {
+      return response.status(401).send({message: 'Ocorreram alguns problemas, verifique se digitou as informações corretamente, ou tente novamente mais tarde!'})
+    }
+
   }
 
   /**
@@ -53,6 +69,9 @@ class SimuladoController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const simulado = await request.turma.simulados().where('id', params.id).first()
+
+    return simulado
   }
 
   /**
@@ -76,6 +95,14 @@ class SimuladoController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
+    const data = request.only(['titulo', 'gabarito', 'pdf'])
+    const simulado = await request.turma.simulados().where('id', params.id).first()
+
+    simulado.merge(data)
+
+    await simulado.save()
+
+    return simulado
   }
 
   /**
@@ -87,6 +114,10 @@ class SimuladoController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+
+    const simulado = await request.turma.simulados().where('id', params.id).first()
+
+    await simulado.delete()
   }
 }
 

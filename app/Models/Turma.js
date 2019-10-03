@@ -15,13 +15,13 @@ class Turma extends Model {
       disableUpdates: false
     })
   }
-
+//relacionamento de turma com usuarios, um usuario pode estar em varias turmas e a turma pode ter vairos usuarios
   user (){
     return this.belongsToMany('App/Models/User').pivotModel(
       'App/Models/UserTurma'
           )
   }
-
+//relacionamento da turma com os simulados, pois uma turma pode ter varios simulado
   simulados () {
     return this.hasMany('App/Models/Simulado')
   }
