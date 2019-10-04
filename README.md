@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Adonis API application
 
 This is the boilerplate for creating an API server in AdonisJs, it comes pre-configured with.
@@ -26,3 +27,7 @@ Run the following command to run startup migrations.
 ```js
 adonis migration:run
 ```
+=======
+# foco_na_caveira_api
+API do projeto de simulados
+>>>>>>> 9628b1ca923b20a8dbbab353ba31f5350c041305
