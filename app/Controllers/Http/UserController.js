@@ -3,7 +3,7 @@
 const User = use('App/Models/User')
 const Convite = use('App/Models/Convite')
 const Role = use('Adonis/Acl/Role')
-const Database = use('Database')
+//const Database = use('Database')
 
 class UserController {
 
@@ -32,11 +32,11 @@ class UserController {
 
 
   }
-
+//cadastra usuario
   async store ({request, response, auth}){
     const data = request.only(['name', 'userName', 'email', 'password', 'cpf', 'nascimento' ])
 
-  //veirifca se já tem algum username, ou cpf, ou email igual cadastrado
+  //verifca se já tem algum username, ou cpf, ou email igual cadastrado
       const userQuery =  await User.query().where('userName', data.userName).orWhere('email', data.email).orWhere('cpf', data.cpf).first()
 
       if (userQuery === null){

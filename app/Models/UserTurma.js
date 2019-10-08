@@ -10,6 +10,11 @@ class UserTurma extends Model {
     return this.belongsTo('App/Models/User')
 
   }
+
+  turmas () {
+    return this.belongsTo('App/Models/Turma')
+
+  }
 }
 
 module.exports = UserTurma

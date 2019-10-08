@@ -35,6 +35,10 @@ Route.group(() => {
       [ 'Turma']
     ]
   ]))
+  //retorna os alunos por turma
+  Route.get('alunos', 'AlunoController.alunosMatriculados').middleware('is:administrador')
+  //matricula o aluno
+  Route.post('alunos', 'AlunoController.store').middleware('is:administrador')
 }).middleware('auth') //usuario precisa estar logado
 
 //grupo de rotsa para as turmas

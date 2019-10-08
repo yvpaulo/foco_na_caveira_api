@@ -12,6 +12,7 @@ class TurmaController {
     return turmas
   }
 
+
   async store ({request, auth}){
     const data = request.only(['titulo'])
 

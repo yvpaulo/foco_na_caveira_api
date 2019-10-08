@@ -18,6 +18,7 @@ class UserTurmaController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+
   }
 
   /**
@@ -40,7 +41,9 @@ class UserTurmaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
+  //matricula aluno
   async store ({ request, response }) {
+
   }
 
   /**
