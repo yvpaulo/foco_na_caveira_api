@@ -17,10 +17,16 @@
 const Route = use('Route')
 
 Route.post('sessions','SessionController.store').validator('Session')
+//para usuario se cadastrar
 Route.post('users', 'UserController.store').validator('User')
 
+
 Route.group(() => {
-  Route.get('roles', 'RoleController.index')
+  //retorna todos os usuarios cadastrados com suas turmas e roles somente para o admim
+  Route.get('users', 'UserController.index').middleware('is:administrador')
+  // atualiza as roles de um usuario
+  Route.put('users/:id', 'UserController.updateRole').middleware('is:administrador')
+  Route.resource('roles', 'RoleController').middleware('is:administrador')
   Route.resource('turmas', 'TurmaController')
   .apiOnly()
   .validator(new Map([
@@ -31,6 +37,7 @@ Route.group(() => {
   ]))
 }).middleware('auth') //usuario precisa estar logado
 
+//grupo de rotsa para as turmas
 Route.group(() => {
   Route.post('convites', 'ConviteController.store').validator('Convite').middleware('can:invites_create')
 //tenho que ver como diferencio as informações recebidas por um admin e por um aluno
@@ -47,4 +54,7 @@ Route.group(() => {
       [ 'can:turmas_create']
     ]
   ]))
-}).middleware(['auth', 'turma']) //usuario precisa estar logado e pertencer a uma turma
+
+  Route.get('alunos', 'AlunoController.index')
+
+}).middleware(['auth','turma']) //usuario precisa estar logado e pertencer a uma turma

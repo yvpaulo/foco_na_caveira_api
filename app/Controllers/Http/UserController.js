@@ -3,8 +3,30 @@
 const User = use('App/Models/User')
 const Convite = use('App/Models/Convite')
 const Role = use('Adonis/Acl/Role')
+const Database = use('Database')
 
 class UserController {
+
+  async index ({request}) {
+
+    //retorna usuarios com as respequitivas roles e turmas
+    const users = await User.query()
+    .with('roles')
+    .with('turmas')
+    .fetch()
+
+    return users
+  }
+  //atualiza por enquanto só as roles do usuario
+  async updateRole ({request, params}) {
+    const roles = request.input('roles')
+
+    const user = await User.find(params.id)
+
+    await user.roles().sync(roles)
+
+
+  }
 
   async store ({request, response, auth}){
     const data = request.only(['name', 'userName', 'email', 'password', 'cpf', 'nascimento' ])

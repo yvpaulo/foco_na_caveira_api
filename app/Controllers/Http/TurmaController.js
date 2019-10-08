@@ -1,6 +1,9 @@
 'use strict'
 
 class TurmaController {
+
+
+
   //minhas turmas
   async index ({auth}){
     //retorna todos as turmas do usuario logado

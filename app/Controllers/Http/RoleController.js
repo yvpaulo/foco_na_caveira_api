@@ -8,6 +8,8 @@ class RoleController {
 
     return roles
   }
+
+
 }
 
 module.exports = RoleController
