@@ -7,7 +7,15 @@ const Model = use('Model')
 const Hash = use('Hash')
 
 class User extends Model {
-  static boot () {
+  //para tratar as permissões de usuário
+  static get traits () {
+    return [
+      '@provider:Adonis/Acl/HasRole',
+      '@provider:Adonis/Acl/HasPermission'
+    ]
+  }
+
+ static boot () {
     super.boot()
 
     /**
@@ -34,6 +42,19 @@ class User extends Model {
   tokens () {
     return this.hasMany('App/Models/Token')
   }
+  //retorna todos relacionamentos de usuario UserTurma
+  //retorna todos os models UserTurma associados com este User
+  turmaJoins () {
+    return this.hasMany('app/Models/UserTurma')
+  }
+
+  roles () {
+    return this.belongsToMany('Adonis/Acl/Role')
+  }
+
+  permission () {
+    return this.belongsToMany('Adonis/Acl/Permission')
+  }
 
   profile () {
     return this.hasOne('App/Models/Profile')
@@ -44,6 +65,7 @@ class User extends Model {
       'App/Models/UserTurma'
     )
   }
+
 }
 
 module.exports = User

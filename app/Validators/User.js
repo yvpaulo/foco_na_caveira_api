@@ -1,6 +1,7 @@
 'use strict'
 
 class User {
+
   //faz com que todas as validações ejam aplicadas de uma vez só
   get validatorALL (){
     return true

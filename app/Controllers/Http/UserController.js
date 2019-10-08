@@ -2,6 +2,7 @@
 
 const User = use('App/Models/User')
 const Convite = use('App/Models/Convite')
+const Role = use('Adonis/Acl/Role')
 
 class UserController {
 
@@ -16,6 +17,9 @@ class UserController {
       try {
         const user = await User.create(data)
         const token = await auth.attempt(data.email, data.password)
+        //todo usuario quando se cadastra é visitante
+        const visitanteRole = await Role.findBy('slug','visitante')
+        await user.roles().attach([visitanteRole.id])
       //return token
       //ver como encaminha o usario para o daschborde dele ou para o cadastro de turmas
       return response.status(200).send({message: 'Cadastrado com sucesso!!',token})
@@ -28,6 +32,7 @@ class UserController {
       }
 
     }
+
 
 
 

@@ -38,7 +38,9 @@ const globalMiddleware = [
 const namedMiddleware = {
   auth: 'Adonis/Middleware/Auth',
   guest: 'Adonis/Middleware/AllowGuestOnly',
-  turma: 'App/Middleware/Turma'
+  turma: 'App/Middleware/Turma',
+  is: 'Adonis/Acl/Is',
+  can: 'Adonis/Acl/Can'
 }
 
 /*

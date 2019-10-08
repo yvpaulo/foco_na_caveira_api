@@ -20,6 +20,7 @@ Route.post('sessions','SessionController.store').validator('Session')
 Route.post('users', 'UserController.store').validator('User')
 
 Route.group(() => {
+  Route.get('roles', 'RoleController.index')
   Route.resource('turmas', 'TurmaController')
   .apiOnly()
   .validator(new Map([
@@ -31,7 +32,7 @@ Route.group(() => {
 }).middleware('auth') //usuario precisa estar logado
 
 Route.group(() => {
-  Route.post('convites', 'ConviteController.store').validator('Convite')
+  Route.post('convites', 'ConviteController.store').validator('Convite').middleware('can:invites_create')
 //tenho que ver como diferencio as informações recebidas por um admin e por um aluno
   Route.resource('simulados', 'SimuladoController')
   .apiOnly()
@@ -39,6 +40,11 @@ Route.group(() => {
     [
       ['simulados.store', 'simulados.update'],
       [ 'Simulado']
+    ]
+  ])).middleware(new Map([
+    [
+      ['simulados.store', 'simulados.update'],
+      [ 'can:turmas_create']
     ]
   ]))
 }).middleware(['auth', 'turma']) //usuario precisa estar logado e pertencer a uma turma

@@ -4,6 +4,8 @@
 const Model = use('Model')
 
 class UserTurma extends Model {
+
+
   user () {
     return this.belongsTo('App/Models/User')
 
