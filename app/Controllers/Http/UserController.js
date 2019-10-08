@@ -9,13 +9,18 @@ class UserController {
 
   async index ({request}) {
 
-    //retorna usuarios com as respequitivas roles e turmas
+    //retorna usuarios com as respequitivas roles, permission e turmas
     const users = await User.query()
-    .with('roles')
     .with('turmas')
+    .with('roles')
+    .with('permission')
     .fetch()
 
-    return users
+    return {
+      users
+      //permissions:   await users.first().getPermissions()
+
+    }
   }
   //atualiza por enquanto só as roles do usuario
   async updateRole ({request, params}) {
