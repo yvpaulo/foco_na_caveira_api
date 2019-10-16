@@ -14,8 +14,8 @@ class NotificationSchema extends Schema {
       .inTable('users')
       .onUpdate('CASCADE')
       .onDelete('CASCADE')
-      table.string('content').notNullable().defaultTo(false)
-      table.boolean('read')
+      table.string('content').notNullable()
+      table.boolean('read').defaultTo(false)
       table.timestamps()
     })
   }
