@@ -65,6 +65,10 @@ class User extends Model {
       'App/Models/UserTurma'
     )
   }
+  //relacionamento com notificações
+  notifications () {
+    return this.hasMany('App/Models/Notification')
+  }
 
 }
 

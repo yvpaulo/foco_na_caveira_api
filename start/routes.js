@@ -21,7 +21,10 @@ Route.post('sessions','SessionController.store').validator('Session')
 Route.post('users', 'UserController.store').validator('User')
 
 
+
 Route.group(() => {
+  Route.resource('notifications', 'NotificationController').apiOnly()
+ // Route.get('notifications', 'NotificationController.index')
   //retorna todos os usuarios cadastrados com suas turmas e roles somente para o admim
   Route.get('users', 'UserController.index').middleware('is:administrador')
   // atualiza as roles de um usuario
