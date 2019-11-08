@@ -4,6 +4,12 @@
 const Model = use('Model')
 
 class Notification extends Model {
+  //qual usuário vai receber a notificação
+ user (){
+  return this.belongsTo('App/Models/User')
 }
+}
+
+
 
 module.exports = Notification

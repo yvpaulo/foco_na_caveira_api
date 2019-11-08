@@ -22,8 +22,11 @@ class NotificationController {
   async index ({ auth, response, params }) {
       //.where('id', params.id).first()
     try {
-      //retorna todos as turmas do usuario logado
-   const notifications = await auth.user.notifications().fetch()
+      //retorna todos as notificações do usuario logado
+      const notifications = await auth.user.notifications().orderBy('created_at', 'desc').fetch()
+      /*const  user = await User.query().where('email', auth.user.email).first()
+    const notifications = await user.notifications().orderBy('created_at', 'desc').fetch()*/
+    //
    //const notifications   = await Notification.query().where('user_id', auth.user.id).fetch()
  //const notifications = await Notification.query().where('user_id', params.id).fetch()
    // const notifications = await Notification.all()
