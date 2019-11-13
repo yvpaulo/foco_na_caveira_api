@@ -19,7 +19,10 @@ const Route = use('Route')
 Route.post('sessions','SessionController.store').validator('Session')
 //para usuario se cadastrar
 Route.post('users', 'UserController.store').validator('User')
-
+//mostrar pdf dos simulados
+Route.get('simulados/:pdf', 'SimuladoController.showPDF')
+//mostrar pdf dos gabaritos
+Route.get('simulados/:gabarito', 'SimuladoController.showGabarito')
 
 
 Route.group(() => {

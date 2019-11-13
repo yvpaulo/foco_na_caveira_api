@@ -7,6 +7,9 @@
 /**
  * Resourceful controller for interacting with simulados
  */
+
+const Helpers = use('Helpers')
+
 class SimuladoController {
   /**
    * Show a list of all simulados.
@@ -47,10 +50,39 @@ class SimuladoController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const data = request.only(['titulo', 'gabarito', 'pdf'])
+    const data = request.only(['titulo'])
 
     try {
-      const simulado = request.turma.simulados().create(data)
+      const pdf = request.file('pdf',
+      {types: ['pdf'],
+      size: '10mb'}
+      )
+
+      const gabarito = request.file('gabarito',
+      {types: ['pdf'],
+      size: '10mb'}
+      )
+
+
+    const name_pdf =data.titulo + new Date().getTime().toString() + pdf.clientName
+    await pdf.move(Helpers.tmpPath('simuladosUploads'), {
+      name: name_pdf/*`${Date.now()}-${file.clientName}`*/
+      /*overwrite: true*/
+      })
+    const name_gabarito =data.titulo + new Date().getTime().toString() + gabarito.clientName
+    await gabarito.move(Helpers.tmpPath('simuladosUploads'), {
+        name: name_gabarito
+        })
+
+    if (!pdf.moved()) {
+      return pdf.errors()
+    }
+    if (!gabarito.moved()) {
+      return pdf.errors()
+    }
+    const dados = { "titulo": data.titulo, "gabarito": gabarito.fileName, "pdf": pdf.fileName}
+
+      const simulado = request.turma.simulados().create(dados)
 
     return simulado
     } catch (error) {
@@ -72,6 +104,17 @@ class SimuladoController {
     const simulado = await request.turma.simulados().where('id', params.id).first()
 
     return simulado
+  }
+  async showPDF ({ params, request, response, view }) {
+
+    return response.download(Helpers.tmpPath(`simuladosUploads/${params.pdf}`))
+
+  }
+
+  async showGabarito ({ params, request, response, view }) {
+
+    return response.download(Helpers.tmpPath(`simuladosUploads/${params.gabarito}`))
+
   }
 
   /**

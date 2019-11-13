@@ -7,7 +7,7 @@ class TurmaController {
   //minhas turmas
   async index ({auth}){
     //retorna todos as turmas do usuario logado
-    const turmas = await auth.user.turmas().fetch()
+    const turmas = await auth.user.turmas().with('simulados').fetch()
 
     return turmas
   }
