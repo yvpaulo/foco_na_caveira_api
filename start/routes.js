@@ -24,6 +24,21 @@ Route.get('simulados/:pdf', 'SimuladoController.showPDF')
 //mostrar pdf dos gabaritos
 Route.get('simulados/:gabarito', 'SimuladoController.showGabarito')
 
+// todas as rotas que exigem que o usuario seja administrador
+Route.group(() => {
+
+  Route.resource('tagquestoes','TagQuestaoController')
+  Route.resource('questaosimulados', 'QuestaoSimuladoController')
+  Route.resource('tags', 'TagController')
+  Route.resource('questoes', 'QuestaoController').validator(new Map([
+    [
+      ['questoes.store', 'questoes.update'],
+      [ 'Questao']
+    ]
+  ]))
+  Route.resource('alternativas', 'AlternativaController').apiOnly()
+
+}).middleware('is:administrador').middleware('auth') //usuario precisa ser administrador e estar logado
 
 Route.group(() => {
   Route.resource('notifications', 'NotificationController').apiOnly()
@@ -49,6 +64,8 @@ Route.group(() => {
 
 //grupo de rotsa para as turmas
 Route.group(() => {
+  //rota para ver o gabarito do simulado
+  Route.get('gabaritodosimulado/:id', 'SimuladoController.gabaritoDoSimulado')
   Route.post('convites', 'ConviteController.store').validator('Convite').middleware('can:invites_create')
 //tenho que ver como diferencio as informações recebidas por um admin e por um aluno
   Route.resource('simulados', 'SimuladoController')

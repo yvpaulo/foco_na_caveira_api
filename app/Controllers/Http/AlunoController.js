@@ -4,11 +4,11 @@ const UserTurma = use('App/Models/UserTurma')
 const Database = use('Database')
 
 class AlunoController {
-  async index ({request}){
-
-    //retorna os alunos de uma turma especifica
+  async alunosMatriculados ({request}){
+    const data = request.only(['turma_id'])
+    //retorna os alunos de todas as turma especifica
     const alunos = await UserTurma.query()
-    .where('turma_id', request.turma.id)
+    .where('turma_id', data.turma_id)
     .with('user')
     .fetch()
 
@@ -16,7 +16,7 @@ class AlunoController {
 
   }
   //retornar todas as turmas com seus respectivos alunos matriculados
-  async alunosMatriculados({request}){
+  async index({request}){
     const alunosMatriculados = await UserTurma.query()
     .orderBy('turma_id')
     .with('turmas')

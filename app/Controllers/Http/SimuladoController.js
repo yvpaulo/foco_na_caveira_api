@@ -9,7 +9,8 @@
  */
 
 const Helpers = use('Helpers')
-
+const Simulado = use('App/Models/Simulado')
+const Alternativa = use('App/Models/Alternativa')
 class SimuladoController {
   /**
    * Show a list of all simulados.
@@ -50,7 +51,7 @@ class SimuladoController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const data = request.only(['titulo'])
+    const data = request.only(['titulo','libera_gabarito'])
 
     try {
       const pdf = request.file('pdf',
@@ -110,10 +111,65 @@ class SimuladoController {
     return response.download(Helpers.tmpPath(`simuladosUploads/${params.pdf}`))
 
   }
-
+//retorna o pdf do gabarito
   async showGabarito ({ params, request, response, view }) {
 
     return response.download(Helpers.tmpPath(`simuladosUploads/${params.gabarito}`))
+
+  }
+
+
+  //retornar o gabarito das repostas do simulado
+  async gabaritoDoSimulado({ params, request, response }) {
+    const simulado = await Simulado.query()
+                            .where('id',params.id)
+                            .with('questoesDoSimulado')
+                            .first()
+   let resposta = {
+    'numero_questao':'',
+    'letra_resposta':'',
+    'valor_se_certo':'',
+    'valor_se_errado':'',
+    'questao_id':''
+    }
+    let alternativa
+
+
+
+    const {questoesDoSimulado} = simulado.toJSON()
+    const questoes_id = (questoesDoSimulado.map(questoes =>
+      questoes.questao_id))
+
+  const alternativasCorretas = await Alternativa.query().where((builder) =>
+  builder.whereIn('questao_id', questoes_id).where('resposta', true)
+  ).fetch();
+
+
+
+       const gabarito = {
+         'simulado_id': simulado.id,
+          'respostas': await (questoesDoSimulado.map(questoes =>
+
+      resposta =  {
+                    numero_questao: questoes.numero,
+                    letra_resposta: alternativasCorretas.toJSON().find(element => element.questao_id == questoes.questao_id).letra,
+                    valor_se_certo: questoes.valor_se_certo,
+                    valor_se_errado: questoes.valor_se_errado ,
+                    questao_id: questoes.id, //id da questaoDoSimulado
+
+                }
+)
+    )}
+    //ordena as respostas pelo numero da questao
+    gabarito.respostas.sort(function(a,b) {
+      return a.numero_questao < b.numero_questao ? -1 : a.numero_questao > b.numero_questao ? 1 : 0;
+  })
+
+    return [gabarito]
+   /* if(simulado)
+    {
+      return [simulados, gabarito]
+    }*/
 
   }
 
@@ -138,8 +194,10 @@ class SimuladoController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const data = request.only(['titulo', 'gabarito', 'pdf'])
-    const simulado = await request.turma.simulados().where('id', params.id).first()
+    const data = request.only(['titulo', 'gabarito', 'pdf', 'libera_gabarito'])
+    const simulado = await request.turma.simulados()
+                          .where('id', params.id)
+                          .first()
 
     simulado.merge(data)
 

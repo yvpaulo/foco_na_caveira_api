@@ -5,32 +5,30 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 /**
- * Resourceful controller for interacting with tags
- * Tags que serão usadas para filtors diversos das questões
+ * Resourceful controller for interacting with questaos
+  Controller para Questão - as questões que compõem um banco de questão para os simulados
  */
 
-const Tag = use('App/Models/Tag')
-class TagController {
+const Questao = use('App/Models/Questao')
+class QuestaoController {
   /**
-   * Show a list of all tags.
-   * GET tags
+   * Show a list of all questaos.
+   * GET questaos
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-
-
   async index ({ request, response, view }) {
-    const tags = await Tag.all()
+    const questoes = await Questao.query().with('alternativas').with('tags').orderBy('created_at', 'desc').fetch()
 
-    return tags
+    return questoes
   }
 
   /**
-   * Render a form to be used for creating a new tag.
-   * GET tags/create
+   * Render a form to be used for creating a new questao.
+   * GET questaos/create
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -38,35 +36,32 @@ class TagController {
    * @param {View} ctx.view
    */
   async create ({ request, response, view }) {
+
   }
 
   /**
-   * Create/save a new tag.
-   * POST tags
+   * Create/save a new questao.
+   * POST questaos
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const data = request.only(['tag'])
-    data.tag = data.tag.toUpperCase()
-    const query = await Tag.query().where('tag', data.tag).first()
-    if(query){
-      return response.status(401).send({message: 'Essa Tag já existe, favor escolher outra.'})
-    }else{
+    const data = request.only(['texto', 'grau_de_dificuldade', 'comentario','observacao'])
+
     try {
 
-      const tag = await Tag.create(data)
-      return tag
+      const questao = await Questao.create(data)
+      return questao
     } catch (error) {
       return response.status(401).send({message: 'Ocorreram alguns problemas, verifique se digitou as informações corretamente, ou tente novamente mais tarde!'})
-    }}
+    }
   }
 
   /**
-   * Display a single tag.
-   * GET tags/:id
+   * Display a single questao.
+   * GET questaos/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -75,17 +70,16 @@ class TagController {
    */
   async show ({ params, request, response, view }) {
     try {
-      const tag = await Tag.findOrFail(params.id);
-    return tag
+      const questao = await Questao.findOrFail(params.id);
+    return questao
     } catch (error) {
       return response.status(401).send({message: 'Ocorreram alguns problemas, verifique se digitou as informações corretamente, ou tente novamente mais tarde!'})
     }
-
   }
 
   /**
-   * Render a form to update an existing tag.
-   * GET tags/:id/edit
+   * Render a form to update an existing questao.
+   * GET questaos/:id/edit
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -96,35 +90,30 @@ class TagController {
   }
 
   /**
-   * Update tag details.
-   * PUT or PATCH tags/:id
+   * Update questao details.
+   * PUT or PATCH questaos/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const tag = await Tag.findOrFail(params.id);
-    const data = request.only(['tag']);
+    const questao = await Questao.findOrFail(params.id);
+    const data = request.only(['texto', 'grau_de_dificuldade', 'comentario','observacao']);
 
-    data.tag = data.tag.toUpperCase()
-    const query = await Tag.query().where('tag', data.tag).whereNot({id: params.id}).first()
-    if(query){
-      return response.status(401).send({message: 'Essa Tag já existe, favor escolher outra.'})
-    }else{
     try {
-    tag.merge(data);
-    await tag.save();
+    questao.merge(data);
+    await questao.save();
 
-    return tag
+    return questao
     }catch (error) {
       return response.status(401).send({message: 'Ocorreram alguns problemas, verifique se digitou as informações corretamente, ou tente novamente mais tarde!'})
-    }}
+    }
   }
 
   /**
-   * Delete a tag with id.
-   * DELETE tags/:id
+   * Delete a questao with id.
+   * DELETE questaos/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -132,14 +121,13 @@ class TagController {
    */
   async destroy ({ params, request, response }) {
     try {
-      const tag = await Tag.findOrFail(params.id);
-    await tag.delete();
+      const questao = await Questao.findOrFail(params.id);
+    await questao.delete();
     return response.status(200).send({message: 'Deletado com sucesso!'})
     } catch (error) {
       return response.status(401).send({message: 'Ocorreram alguns problemas, verifique se digitou as informações corretamente, ou tente novamente mais tarde!'})
     }
-
   }
 }
 
-module.exports = TagController
+module.exports = QuestaoController

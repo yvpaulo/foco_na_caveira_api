@@ -70,6 +70,16 @@ class User extends Model {
     return this.hasMany('App/Models/Notification')
   }
 
+  //relacionamento com as questões do simulado
+  questoesSimulados () {
+    return this.hasMany('App/Models/QuestaoSimulado')
+  }
+
+  //relacionamento com as respostas que o aluno dá
+  respostasDosAlunos () {
+    return this.hasMany('App/Models/AlunoRespostaSimulado')
+  }
+
 }
 
 module.exports = User

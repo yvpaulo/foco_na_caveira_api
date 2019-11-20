@@ -1,16 +1,17 @@
 'use strict'
 
-class Convite {
+class Questao {
   //faz com que todas as validações sejam aplicadas de uma vez só
   get validatorALL (){
     return true
   }
   get rules () {
     return {
-      convites:'required|array',
-      'convites.*': 'required|email'
+      texto: 'required'
+
     }
   }
+
 }
 
-module.exports = Convite
+module.exports = Questao

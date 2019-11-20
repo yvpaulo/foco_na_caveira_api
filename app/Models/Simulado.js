@@ -5,6 +5,7 @@ const Env = use('Env')
 const Model = use('Model')
 
 class Simulado extends Model {
+ //campo virtual para mostrar url dos pdfs e gabaritos
   static get computed () {
     return ['url', 'urlGagarito']
   }
@@ -18,6 +19,19 @@ class Simulado extends Model {
   getUrlGagarito ({ gabarito }) {
     return `${Env.get('APP_URL')}/simulados/${gabarito}`
   }
+
+  //quais questoes o simulado tem do banco de questões
+  questoes () {
+    return this.belongsToMany('App/Models/Questao').pivotModel(
+      'App/Models/QuestaoSimulado'
+    )
+  }
+
+  questoesDoSimulado(){
+    return this.hasMany('App/Models/QuestaoSimulado')
+  }
+
+
 }
 
 module.exports = Simulado

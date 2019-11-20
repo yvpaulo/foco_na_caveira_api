@@ -20,7 +20,7 @@ class NotificationController {
    * @param {View} ctx.view
    */
   async index ({ auth, response, params }) {
-      //.where('id', params.id).first()
+
     try {
       //retorna todos as notificações do usuario logado
       const notifications = await auth.user.notifications().orderBy('created_at', 'desc').fetch()
