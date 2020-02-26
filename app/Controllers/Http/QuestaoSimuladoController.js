@@ -66,10 +66,11 @@ class QuestaoSimuladoController {
       try {
 
         const query = await QuestaoSimulado.query()
-        .where('numero', data.numero)
-        .orWhere({questao_id: data.questao_id,
-                  simulado_id: data.simulado_id})
-        .first()
+        .where('simulado_id', data.simulado_id)
+        .where(function() {
+          this.where('numero', data.numero)
+          .orWhere('questao_id', data.questao_id)})
+          .first()
 
         if(!query)
         {

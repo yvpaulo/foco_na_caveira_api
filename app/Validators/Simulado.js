@@ -11,6 +11,9 @@ class Simulado {
       pdf:'required'
     }
   }
+
+
+
 }
 
 module.exports = Simulado

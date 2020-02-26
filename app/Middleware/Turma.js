@@ -11,6 +11,10 @@ class Turma {
    */
   async handle ({ request, response, auth }, next) {
 
+      //const turmaAtiva = request.header(turma)
+      //const turmaAtiva = turma.active.slug
+      //const slug =
+
       const slug = request.header('TURMA')
 
       let turma = null
@@ -26,8 +30,11 @@ class Turma {
 
       auth.user.currentTurma = turma.id
       request.turma = turma
+      //request.turmaAtiva = turmaAtiva
     await next()
   }
+
+
 }
 
 module.exports = Turma

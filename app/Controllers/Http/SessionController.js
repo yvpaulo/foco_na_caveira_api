@@ -7,17 +7,26 @@ class SessionController {
 
     const token = await auth.attempt(email, password)
     //token.refreshToken = true;
-    const user =  await User.query().where('email', email).first()
-    const {id, name} = user;
-    //return token
+    const userQuery =  await User.query()
+                        .with('roles')
+                        .where('email', email)
+                        .first()
+
+
+    const {id, name, roles} = userQuery.toJSON()
+
     return response.json({
       user:{
         id,
         name,
         email,
+        roles,
 
       },
-      token: token.token
+
+      token: token.token,
+
+
     })
   }
 }

@@ -50,6 +50,7 @@ class AlternativaController {
    */
   async store ({ request, response }) {
     const data = request.only(['texto', 'letra','resposta','questao_id'])
+    data.letra = data.letra.toUpperCase()
 
 
     try {
@@ -125,7 +126,7 @@ class AlternativaController {
    */
   async update ({ params, request, response }) {
     const data = request.only(['texto', 'letra','resposta','questao_id'])
-
+    data.letra = data.letra.toUpperCase()
 
 
     try {

@@ -10,7 +10,7 @@
 
 const Helpers = use('Helpers')
 const Simulado = use('App/Models/Simulado')
-const Alternativa = use('App/Models/Alternativa')
+const Gabarito = use('App/Models/Gabarito')
 class SimuladoController {
   /**
    * Show a list of all simulados.
@@ -23,10 +23,14 @@ class SimuladoController {
    */
   async index ({ request, response, view }) {
     //estou usando dessa forma porque criei um midleware de turma e
-    //no com a informação da turma verifico quais simulados ela tem
-    const simulados = request.turma.simulados().fetch()
+    // com a informação da turma verifico quais simulados ela tem
+    // e ainda trago quantas questões o simulado tem
 
-    return simulados
+    const simulados = request.turma
+                      .simulados()
+                      .withCount('questoesDoSimulado').fetch()
+    //const tot = await Simulado.totalQuestoes(7)
+    return simulados//, tot]
   }
 
   /**
@@ -102,9 +106,14 @@ class SimuladoController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    const simulado = await request.turma.simulados().where('id', params.id).first()
-
-    return simulado
+    //const simulado = await request.turma.simulados().where('id', params.id).first()
+    const simulado = await Simulado.query()
+                                    .where('id', params.id)
+                                    .with('questoesDoSimulado', (builder) => {
+                                      builder.orderBy('numero', 'asc')
+                                    })
+                                    .first()
+     return simulado
   }
   async showPDF ({ params, request, response, view }) {
 
@@ -121,55 +130,16 @@ class SimuladoController {
 
   //retornar o gabarito das repostas do simulado
   async gabaritoDoSimulado({ params, request, response }) {
-    const simulado = await Simulado.query()
-                            .where('id',params.id)
-                            .with('questoesDoSimulado')
-                            .first()
-   let resposta = {
-    'numero_questao':'',
-    'letra_resposta':'',
-    'valor_se_certo':'',
-    'valor_se_errado':'',
-    'questao_id':''
-    }
-    let alternativa
 
 
-
-    const {questoesDoSimulado} = simulado.toJSON()
-    const questoes_id = (questoesDoSimulado.map(questoes =>
-      questoes.questao_id))
-
-  const alternativasCorretas = await Alternativa.query().where((builder) =>
-  builder.whereIn('questao_id', questoes_id).where('resposta', true)
-  ).fetch();
+    /*const simulado = await Simulado.query()
+    .where('id',params.id)
+    .with('questoesDoSimulado')
+    .first()*/
+    const gabarito = await Gabarito.retorna_gabarito(params.id)
+    return gabarito
 
 
-
-       const gabarito = {
-         'simulado_id': simulado.id,
-          'respostas': await (questoesDoSimulado.map(questoes =>
-
-      resposta =  {
-                    numero_questao: questoes.numero,
-                    letra_resposta: alternativasCorretas.toJSON().find(element => element.questao_id == questoes.questao_id).letra,
-                    valor_se_certo: questoes.valor_se_certo,
-                    valor_se_errado: questoes.valor_se_errado ,
-                    questao_id: questoes.id, //id da questaoDoSimulado
-
-                }
-)
-    )}
-    //ordena as respostas pelo numero da questao
-    gabarito.respostas.sort(function(a,b) {
-      return a.numero_questao < b.numero_questao ? -1 : a.numero_questao > b.numero_questao ? 1 : 0;
-  })
-
-    return [gabarito]
-   /* if(simulado)
-    {
-      return [simulados, gabarito]
-    }*/
 
   }
 
